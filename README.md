@@ -1,35 +1,58 @@
-# Docker Tinyproxy ![alt text](https://raw.githubusercontent.com/daniel-middleton/docker-tinyproxy/master/other/banu_logo.png "Banu!")
-A quick and easy Dockerised Tinyproxy with configurable ACL.
+# Docker Tinyproxy
 
-Find it on [GitHub](https://github.com/daniel-middleton/docker-tinyproxy).
+A quick and easy Dockerised Tinyproxy, adapted from [Daniel
+Middleton's](https://github.com/monokal/docker-tinyproxy) original.
 
-Find it on [DockerHub](https://registry.hub.docker.com/u/dannydirect/tinyproxy/).
+This version simplifies the startup procedure. Instead of passing an ACL
+on the command line and modifying the tinyproxy configuration file, it
+simply uses the file at `/etc/tinyproxy/tinyproxy.conf`.
 
-### Usage
----
-##### Running a new Tinyproxy container
+To configure Tinyproxy, mount your own `tinyproxy.conf` at this location
+in the container. The `tinyproxy.conf` file in the repository should be
+used as a base for creating your own file.
+
+> Note: the default `tinyproxy.conf` accepts connections only from
+> `127.0.0.1`, which is the container itself, so you must use a custom
+> configuration file with additional `Allow` directives to make the
+> container usable.
+
+In addition, this version uses a custom build of tinyproxy (see
+[RateHighway/tinyproxy](https://github.com/RateHighway/tinyproxy)) that
+allows log files to be symlinks to device files. The default log file
+`/var/log/tinyproxy/tinyproxy.conf` is a symlink to `/dev/stdout`, which
+means that Tinyproxy will log to stdout without creating any log files
+that need to be managed.
+
+Find it on [GitHub](https://github.com/RateHighway/docker-tinyproxy).
+
+Find it on [DockerHub](https://registry.hub.docker.com/u/ratehighway/tinyproxy/).
+
+## Usage
+
+### Running a new Tinyproxy container
 
 ```
-Usage:
-    docker run -d --name='tinyproxy' -p <Host_Port>:8888 dannydirect/tinyproxy:latest <ACL>
-
-        - Set <Host_Port> to the port you wish the proxy to be accessible from.
-        - Set <ACL> to 'ANY' to allow unrestricted proxy access, or one or more space seperated IP/CIDR addresses for tighter security.
-
-    Examples:
-        docker run -d --name='tinyproxy' -p 6666:8888 dannydirect/tinyproxy:latest ANY
-        docker run -d --name='tinyproxy' -p 7777:8888 dannydirect/tinyproxy:latest 87.115.60.124
-        docker run -d --name='tinyproxy' -p 8888:8888 dannydirect/tinyproxy:latest 10.103.0.100/24 192.168.1.22/16
+docker run -d --name=tinyproxy \
+  -p 8888:8888 \
+  -v /your/tinyproxy.conf:/etc/tinyproxy/tinyproxy.conf \
+  ratehighway/tinyproxy
 ```
 
-### Monitoring
----
-##### Logs
-`docker logs -f tinyproxy` will display a following tail of `/var/log/tinyproxy/tinyproxy.log`
+### Stats
 
-##### Stats
-Navigating to `http://tinyproxy.stats/` while connected to the proxy will display the Tinyproxy Stats page.
+Navigating to `http://tinyproxy.stats/` while connected to the proxy
+will display the Tinyproxy Stats page.
 
-### Contribute
----
-As always, contributions are appriciated. Simply open a Pull request.
+### Logging
+
+The default configuration will log to stdout.
+
+## Building
+
+Building the tinyproxy image:
+
+    docker build -t ratehighway/tinyproxy:latest .
+
+Building the custom tinyproxy binary:
+
+    (cd tinyproxy-build && sh build.sh)
