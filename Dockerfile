@@ -16,7 +16,7 @@ RUN apk update && apk add \
   tinyproxy
 
 ADD tinyproxy-build/tinyproxy /usr/sbin/tinyproxy
-ADD tinyproxy.conf /etc/tinyproxy/tinyproxy.conf
+ADD tinyproxy-build/tinyproxy.conf /etc/tinyproxy/tinyproxy.conf
 
 WORKDIR /root
 ADD run.sh .

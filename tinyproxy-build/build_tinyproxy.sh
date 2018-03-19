@@ -3,7 +3,7 @@
 echo 'Building custom tinyproxy binary'
 
 # clone repo
-git clone https://github.com/RateHighway/tinyproxy.git
+git clone https://github.com/tinyproxy/tinyproxy.git
 
 # change to work dir
 cd tinyproxy
@@ -22,5 +22,6 @@ make
 strip src/tinyproxy
 
 cp src/tinyproxy /output
+cp etc/tinyproxy.conf /output
 
 echo 'Done'

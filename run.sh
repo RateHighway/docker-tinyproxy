@@ -1,6 +1,2 @@
-#!/bin/bash
-
-ln -s -f /dev/stdout /var/log/tinyproxy/tinyproxy.log
-chown tinyproxy:tinyproxy /var/log/tinyproxy/tinyproxy.log
-
+#!/bin/sh
 exec /usr/sbin/tinyproxy -d
